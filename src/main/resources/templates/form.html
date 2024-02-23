@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Form</title>
+</head>
+<body>
+<form id="data-form">
+    <label for="id">ID:</label>
+    <input type="text" id="id" name="id" placeholder="숫자만 입력하세요"><br><br>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name"><br><br>
+    <button type="submit">Submit</button>
+</form>
+
+<div id="message"></div>
+
+<script>
+    document.getElementById("data-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const formData = {
+            id: document.getElementById("id").value,
+            name: document.getElementById("name").value
+        };
+
+        fetch("http://localhost:8080/api/saveData", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("message").innerHTML = "서버로 데이터 전송 성공! :  " + JSON.stringify(data);
+            })
+            .catch(error => {
+                document.getElementById("message").innerHTML = "서버로 데이터 전송 실패 ㅠ: " + error.message;
+            });
+    });
+</script>
+</body>
+</html>
